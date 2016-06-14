@@ -1,0 +1,30 @@
+{
+  "name": "client-side-jspm",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "jspm": "0.17.0-beta.21",
+    "live-server": "1.0.0"
+  },
+  "jspm": {
+    "name": "client-side-jspm",
+    "main": "index.js",
+    "dependencies": {
+      "whatwg-fetch": "npm:whatwg-fetch@^1.0.0",
+      "yo-yo": "npm:yo-yo@^1.2.1"
+    },
+    "devDependencies": {
+      "plugin-babel": "npm:systemjs-plugin-babel@^0.0.12"
+    },
+    "peerDependencies": {
+      "process": "github:jspm/nodelibs-process@^0.2.0-alpha"
+    }
+  }
+}

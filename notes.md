@@ -1,9 +1,12 @@
+## Make sure the directory is called `joyofcoding`!
+
 ```
 npm init -y
 ```
 
 ```
-npm install --save-dev jspm@0.17.0-beta.21 live-server
+npm link jspm
+npm install live-server
 ```
 
 Start live-server and load up in the browser.
@@ -14,7 +17,9 @@ Start live-server and load up in the browser.
 jspm init .
 ```
 
-Pick quick setup, say no to dev version, set local package main as index.js
+Quick set up
+
+__Set up SystemJS package main as `index.js`__
 
 ```
 mkdir src
@@ -29,7 +34,7 @@ vim index.html
     <script src="jspm_packages/system.js"></script>
     <script src="jspm.config.js"></script>
     <script>
-      System.import('client-side-jspm');
+      System.import('joyofcoding');
     </script>
   </head>
   <body>
@@ -40,20 +45,13 @@ vim index.html
 ```
 vim src/index.js
 console.log('hello world');
-// change it to some ES2015
 ```
 
-## Bundling files up into one
-
-```
-jspm bundle client-side-jspm -wid
-```
-
-Now create a new file
+## ES2015 module support
 
 ```
 vim src/make-red.js
-export default function() {
+export default function makeRed() {
   document.body.style.backgroundColor = 'red';
 }
 ```
@@ -62,10 +60,7 @@ export default function() {
 vim src/index.js
 import makeRed from './make-red';
 makeRed();
-console.log(`2 + 2 is ${2 + 2}`);
 ```
-
-Note how there's no extra requests in the browser but now stuff just works.
 
 ## Fetching data
 
@@ -97,6 +92,32 @@ fetchUserInfo('jackfranklin').then(d => {
 });
 ```
 
+## Bundling files up into one
+
+Once you get past a certain number of requests this will get slow, so we can rebuild our browser build every time a file changes.
+
+This is cached so it stays mega performant even at large scale applications.
+
+```
+jspm bundle joyofcoding -wid
+```
+
+Now refresh and view the network requests.
+
+Now make a change and see that the build gets rebuilt (change 'red' to 'blue' or something).
+
+This even works if you install things (pending my PR) - install jQuery and prove it.
+
+```
+vim src/make-red.js
+import $ from 'jquery';
+
+export default function makeRed() {
+  $('body').css('backgroundColor', 'red');
+}
+```
+
+
 ## Building something "proper"
 
 ```
@@ -104,16 +125,21 @@ jspm install npm:yo-yo
 ```
 
 ```
-vim src/index.js
 import makeRed from './make-red';
 import { fetchUserInfo } from './github-api';
+import yo from 'yo-yo';
 
 makeRed();
 
-console.log(`2 + 2 is ${2 + 2}`);
+const template = user => {
+  return yo`<div>
+    User: ${user.name} works for ${user.company}
+  </div>`;
+}
 
-fetchUserInfo('jackfranklin').then(d => {
-  document.body.innerHTML = JSON.stringify(d, null, 4);
+fetchUserInfo('jackfranklin').then(user => {
+  const outputElement = template(user);
+  document.body.appendChild(outputElement);
 });
 ```
 
@@ -125,48 +151,51 @@ Note that build.js is a bit larger now!
 ```
 import makeRed from './make-red';
 import { fetchUserInfo } from './github-api';
+import $ from 'jquery';
 import yo from 'yo-yo';
 
 makeRed();
 
-const renderUser = (user) => {
+const renderUser = user => {
   if (user) {
     return yo`<p>
-      User : ${ user.name } works for ${ user.company }
+      User: ${user.name} works for ${user.company}
     </p>`;
   } else {
-    return yo`<p>No user</p>`
+    return yo`<p>No user!</p>`;
   }
-};
+}
 
 const template = (user, buttonClick) => {
   return yo`<div>
     <input type="text" value="${user && user.login || ''}" data-user-input />
     <button onclick=${buttonClick}>Update!</button>
     ${ renderUser(user) }
-  </div>`
-};
+  </div>`;
+}
 
 const update = () => {
-  const username = document.querySelector('[data-user-input]').value;
+  const username = $('[data-user-input]').val();
   fetchUserInfo(username).then(d => {
     const newOutput = template(d, update);
     yo.update(outputElement, newOutput);
   });
-};
+}
 
 const outputElement = template(undefined, update);
 document.body.appendChild(outputElement);
+
+
 ```
 
 ## Building for production
 
 ```
-jspm bundle client-side-jspm dist/bundle.js --minify
+jspm bundle joyofcoding dist/bundle.js --minify
 ```
 
 ```
-vim prod-index.html
+vim dist/index.html
 <!DOCTYPE html>
 <html>
   <head>
@@ -177,7 +206,7 @@ vim prod-index.html
   </head>
   <body>
     <script>
-      System.import('client-side-jspm');
+      System.import('joyofcoding');
     </script>
   </body>
 </html>
@@ -190,13 +219,13 @@ Vendor libraries won't change very much: for us we could keep Yo-Yo and whatwg-f
 First bundle our vendor files:
 
 ```
-jspm bundle yo-yo + whatwg-fetch dist/vendor.js --minify
+jspm bundle yo-yo + whatwg-fetch + jquery dist/vendor.js --minify
 ```
 
 Now build the main file:
 
 ```
-jspm bundle client-side-jspm - yo-yo - whatwg-fetch dist/app.js --minify
+jspm bundle joyofcoding - yo-yo - whatwg-fetch - jquery dist/app.js --minify
 ```
 
 And update the prod HTML file:
@@ -206,15 +235,41 @@ And update the prod HTML file:
 <html>
   <head>
     <title>Open Sauce</title>
-    <script src="jspm_packages/system.js"></script>
-    <script src="jspm.config.js"></script>
-    <script src="dist/vendor.js"></script>
-    <script src="dist/app.js"></script>
+    <script src="../jspm_packages/system.js"></script>
+    <script src="../jspm.config.js"></script>
+    <script src="vendor.js"></script>
+    <script src="app.js"></script>
   </head>
   <body>
     <script>
-      System.import('client-side-jspm');
+      System.import('joyofcoding');
     </script>
   </body>
 </html>
 ```
+
+## Self executing build
+
+We can improve further by building a bundle that includes SystemJS, the config and everything required:
+
+```
+jspm build joyofcoding --minify
+```
+
+And update our HTML file:
+
+```
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Open Sauce</title>
+  </head>
+  <body>
+    <script src="sfx.js"></script>
+  </body>
+</html>
+```
+
+And now we have a smaller footprint and fewer scripts to run.
+
+

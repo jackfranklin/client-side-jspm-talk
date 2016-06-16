@@ -251,7 +251,7 @@ And update the prod HTML file:
 We can improve further by building a bundle that includes SystemJS, the config and everything required:
 
 ```
-jspm build joyofcoding --minify
+jspm build joyofcoding dist/sfx.js --minify
 ```
 
 And update our HTML file:

@@ -184,8 +184,6 @@ const update = () => {
 
 const outputElement = template(undefined, update);
 document.body.appendChild(outputElement);
-
-
 ```
 
 ## Building for production

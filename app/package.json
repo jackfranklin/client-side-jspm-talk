@@ -1,0 +1,31 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "jspm": "github:jackfranklin/jspm-cli#0.17",
+    "live-server": "1.0.0"
+  },
+  "jspm": {
+    "name": "joyofcoding",
+    "main": "index.js",
+    "dependencies": {
+      "jquery": "npm:jquery@^3.0.0",
+      "whatwg-fetch": "npm:whatwg-fetch@^1.0.0",
+      "yo-yo": "npm:yo-yo@^1.2.1"
+    },
+    "devDependencies": {
+      "plugin-babel": "npm:systemjs-plugin-babel@^0.0.12"
+    },
+    "peerDependencies": {
+      "process": "github:jspm/nodelibs-process@^0.2.0-alpha"
+    }
+  }
+}

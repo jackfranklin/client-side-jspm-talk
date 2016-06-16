@@ -1,4 +1,4 @@
-build.js
-build.js.map
-jspm_packages/
-dist/
+app/jspm_packages/
+app/dist/sfx*
+app/build.js
+app/build.js.map

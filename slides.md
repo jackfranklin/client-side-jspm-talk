@@ -24,6 +24,10 @@
 
 ---
 
+# `System.import`
+
+---
+
 # support for many module formats
 
 ---
@@ -37,6 +41,16 @@
 ---
 
 # Demo!
+
+(Pray for the WiFi)
+
+---
+
+# The Demo worked!
+
+---
+
+# Beta!
 
 ---
 

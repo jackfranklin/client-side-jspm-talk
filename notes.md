@@ -9,6 +9,8 @@ npm link jspm
 npm install live-server
 ```
 
+`live-server --browser="google chrome"`
+
 Start live-server and load up in the browser.
 
 ## Initialise jspm
@@ -62,6 +64,24 @@ import makeRed from './make-red';
 makeRed();
 ```
 
+## Installing packages
+
+We need jQuery to manipulate the DOM, right?!
+
+```
+jspm install jquery
+```
+
+JSPM registry.
+
+```
+import $ from 'jquery';
+
+export default function() {
+  $('body').css('backgroundColor', 'red');
+}
+```
+
 ## Fetching data
 
 ```
@@ -84,8 +104,6 @@ import makeRed from './make-red';
 import { fetchUserInfo } from './github-api';
 
 makeRed();
-
-console.log(`2 + 2 is ${2 + 2}`);
 
 fetchUserInfo('jackfranklin').then(d => {
   document.body.innerHTML = JSON.stringify(d, null, 4);
